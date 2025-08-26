@@ -26,9 +26,9 @@
 
     <!-- 主内容区 - 子路由出口 -->
     <n-layout>
-      <n-layout-header bordered class="header">
+      <!-- <n-layout-header bordered class="header">
         <n-breadcrumb :items="breadcrumbItems" />
-      </n-layout-header>
+      </n-layout-header> -->
       <n-layout-content class="main-content">
         <router-view />
       </n-layout-content>
