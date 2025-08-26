@@ -56,12 +56,10 @@ onUnmounted(() => {
 });
 
 watch(noteContent, (newVal) => {
-  console.log("笔记内容更新:", newVal);
 });
 </script>
 
 <style scoped>
-
 .notes-feed {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -69,5 +67,4 @@ watch(noteContent, (newVal) => {
   margin: 0 auto;
   max-width: 750px;
 }
-
 </style>

@@ -1,6 +1,17 @@
 <template>
   <div class="tiptap-editor-container">
-    <editor-content :editor="editor" class="editor-content" />
+    <!-- 添加相对定位容器 -->
+    <div class="editor-wrapper">
+      <editor-content :editor="editor" class="editor-content" />
+      <!-- 发布按钮 -->
+      <button
+        class="publish-button"
+        @click="handlePublish"
+        :disabled="isDisabled"
+      >
+        <PaperPlane class="icon" />
+      </button>
+    </div>
   </div>
 </template>
   
@@ -9,6 +20,9 @@ import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
 import { Placeholder } from "@tiptap/extensions";
 import { watch } from "vue";
+import { Button } from "./tiptap-ui-primitive/button";
+import { PaperPlane } from "@vicons/ionicons5";
+import { ref } from "vue";
 
 const props = defineProps({
   modelValue: {
@@ -17,9 +31,15 @@ const props = defineProps({
   },
 });
 
+const isDisabled = ref(true);
+const isContentEmpty = (html) => {
+  // 移除所有HTML标签和空白字符后检查是否为空
+  const text = html.replace(/<[^>]*>|\s+/g, "");
+  return text.length === 0;
+};
+
 const editor = useEditor({
   content: props.modelValue,
-
   extensions: [
     StarterKit,
     Placeholder.configure({
@@ -51,11 +71,27 @@ watch(
   (newValue) => {
     if (editor && newValue !== editor.value.getHTML()) {
       editor.value.commands.setContent(newValue);
+      // 检查内容是否为空
+      isDisabled.value = isContentEmpty(content);
+      return;
     }
+    isDisabled.value = isContentEmpty(newValue);
   }
 );
 
-const emit = defineEmits(["update:modelValue"]);
+// 添加发布处理函数
+const handlePublish = () => {
+  if (!editor || !editor.value) return;
+  // 获取编辑器内容
+  const content = editor.value.getHTML();
+  // 触发发布事件，将内容传递给父组件
+  emit("publish", content);
+  // 可选：发布后清空内容
+  editor.value.commands.clearContent();
+  console.log("发布内容:", content);
+};
+
+const emit = defineEmits(["update:modelValue", "publish"]);
 </script>
 
 <style scoped>
@@ -85,5 +121,43 @@ const emit = defineEmits(["update:modelValue"]);
 ::v-deep .tiptap-editor:focus-within {
   outline: none !important;
   border: none !important;
+}
+
+.editor-wrapper {
+  position: relative; /* 为按钮绝对定位提供参考 */
+  min-height: 200px; /* 保持最小高度 */
+}
+
+.publish-button {
+  position: absolute; /* 绝对定位在编辑器内 */
+  right: 12px; /* 右间距 */
+  bottom: 12px; /* 底部间距 */
+  width: 60px; /* 按钮大小 */
+  height: 35px; /* 按钮大小 */
+  line-height: 30px; /* 居中 */
+  border-radius: 10px; /* 圆形按钮 */
+  background-color: rgb(57, 115, 72); /* 主题色 */
+  color: white; /* 图标颜色 */
+  border: none; /* 无边框 */
+  cursor: pointer; /* 鼠标指针 */
+  display: flex; /* 图标居中 */
+  align-items: center; /* 图标居中 */
+  justify-content: center; /* 图标居中 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* 阴影效果 */
+  transition: background-color 0.2s; /* 过渡效果 */
+}
+
+.publish-button:hover {
+  background-color: rgb(45, 92, 57); /*  hover状态 */
+}
+
+.publish-button:disabled {
+  background-color: #ccc; /* 禁用状态 */
+  cursor: not-allowed; /* 禁用指针 */
+}
+
+.icon {
+  width: 20px; /* 图标大小 */
+  height: 20px; /* 图标大小 */
 }
 </style>
