@@ -14,7 +14,6 @@ pub async fn setup_db(app: &App) -> Result<Db, sqlx::Error> {
         Err(e) => {
             println!("创建数据目录失败: {}", e);
         }
-        
     };
 
     path.push("folio_arbor.db");
@@ -23,7 +22,6 @@ pub async fn setup_db(app: &App) -> Result<Db, sqlx::Error> {
     .connect(path.to_str().unwrap())
     .await
     .unwrap();
-
 
     Ok(db)
 }
