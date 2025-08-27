@@ -3,7 +3,7 @@
     <!-- 固定顶部的文献笔记输入框 -->
     <div class="editor-container" :style="editorStyle">
       <h3>添加文献笔记</h3>
-      <TiptapEditor v-model="noteContent" />
+      <TiptapEditor v-model="noteContent" :publish="handlePublish"/>
     </div>
 
     <!-- 文献笔记卡片流 -->
@@ -22,11 +22,23 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted, watch } from "vue";
+import {ref, reactive, onMounted, onUnmounted, watch} from "vue";
 import TiptapEditor from "@/components/TiptapEditor.vue";
+import {invoke} from "@tauri-apps/api/core";
 
 // 笔记内容双向绑定
 const noteContent = ref("");
+
+// 发布处理函数
+const handlePublish = async (content) => {
+  try {
+    await invoke("create_literature_note", {content});
+    // 发布成功后，清空内容
+    noteContent.value = "";
+  } catch (error) {
+    console.error("发布失败:", error);
+  }
+};
 
 // 编辑器样式响应式控制
 const editorStyle = reactive({

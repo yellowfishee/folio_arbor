@@ -1,10 +1,7 @@
 use tauri::Manager;
-
-
+mod commands;
 mod db;
 mod services;
-
-
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -18,6 +15,10 @@ pub fn run() {
             });
             Ok(())
         })
+        .invoke_handler(tauri::generate_handler![
+            commands::create_literature_note,
+            commands::get_all_literature_notes,
+        ])
         .run(tauri::generate_context!())
         .expect("应用启动失败");
 }

@@ -2,32 +2,36 @@
   <div class="tiptap-editor-container">
     <!-- 添加相对定位容器 -->
     <div class="editor-wrapper">
-      <editor-content :editor="editor" class="editor-content" />
+      <editor-content :editor="editor" class="editor-content"/>
       <!-- 发布按钮 -->
       <button
-        class="publish-button"
-        @click="handlePublish"
-        :disabled="isDisabled"
+          class="publish-button"
+          @click="handlePublish"
+          :disabled="isDisabled"
       >
-        <PaperPlane class="icon" />
+        <PaperPlane class="icon"/>
       </button>
     </div>
   </div>
 </template>
-  
-  <script setup>
-import { useEditor, EditorContent } from "@tiptap/vue-3";
+
+<script setup>
+import {useEditor, EditorContent} from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
-import { Placeholder } from "@tiptap/extensions";
-import { watch } from "vue";
-import { Button } from "./tiptap-ui-primitive/button";
-import { PaperPlane } from "@vicons/ionicons5";
-import { ref } from "vue";
+import {Placeholder} from "@tiptap/extensions";
+import {watch} from "vue";
+import {Button} from "./tiptap-ui-primitive/button";
+import {PaperPlane} from "@vicons/ionicons5";
+import {ref} from "vue";
 
 const props = defineProps({
   modelValue: {
     type: String,
     default: "",
+  },
+  publish: {
+    type: Function,
+    default: () => {},
   },
 });
 
@@ -43,7 +47,7 @@ const editor = useEditor({
   extensions: [
     StarterKit,
     Placeholder.configure({
-      placeholder: ({ node }) => {
+      placeholder: ({node}) => {
         // 如果content为空，显示提示文本
         if (node.content.size === 0) {
           return "开始输入文献笔记... 📝";
@@ -58,7 +62,7 @@ const editor = useEditor({
       class: "tiptap-editor",
     },
   },
-  onUpdate: ({ editor }) => {
+  onUpdate: ({editor}) => {
     // 当编辑器内容更新时，触发v-model的更新
     const html = editor.getHTML();
     // 通过$emit触发更新事件
@@ -67,16 +71,16 @@ const editor = useEditor({
 });
 
 watch(
-  () => props.modelValue,
-  (newValue) => {
-    if (editor && newValue !== editor.value.getHTML()) {
-      editor.value.commands.setContent(newValue);
-      // 检查内容是否为空
-      isDisabled.value = isContentEmpty(content);
-      return;
+    () => props.modelValue,
+    (newValue) => {
+      if (editor && newValue !== editor.value.getHTML()) {
+        editor.value.commands.setContent(newValue);
+        // 检查内容是否为空
+        isDisabled.value = isContentEmpty(content);
+        return;
+      }
+      isDisabled.value = isContentEmpty(newValue);
     }
-    isDisabled.value = isContentEmpty(newValue);
-  }
 );
 
 // 添加发布处理函数
@@ -84,8 +88,14 @@ const handlePublish = () => {
   if (!editor || !editor.value) return;
   // 获取编辑器内容
   const content = editor.value.getHTML();
-  // 触发发布事件，将内容传递给父组件
-  emit("publish", content);
+  // 如果有传递的发布处理函数，则调用它
+  if (props.publish && typeof props.publish === 'function') {
+    props.publish(content);
+  } else {
+    // 如果没有传递处理函数，触发默认的发布事件
+    emit("publish", content);
+  }
+
   // 可选：发布后清空内容
   editor.value.commands.clearContent();
   console.log("发布内容:", content);
