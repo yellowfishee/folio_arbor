@@ -76,10 +76,10 @@ watch(
       if (editor && newValue !== editor.value.getHTML()) {
         editor.value.commands.setContent(newValue);
         // 检查内容是否为空
-        isDisabled.value = isContentEmpty(content);
+        isDisabled.value = isContentEmpty(editor.value.getHTML());
         return;
       }
-      isDisabled.value = isContentEmpty(newValue);
+      isDisabled.value = isContentEmpty(editor.value.getHTML());
     }
 );
 

@@ -41,4 +41,17 @@ impl LiteratureNoteService {
         .fetch_all(pool)
         .await
     }
+
+    pub async fn delete_literature_note(
+        pool: &SqlitePool,
+        id: i64,
+    ) -> Result<(), sqlx::Error> {
+        sqlx::query(
+            "DELETE FROM literature_notes WHERE id = ?"
+        )
+        .bind(id)
+        .execute(pool)
+        .await?;
+        Ok(())
+    }
 }
