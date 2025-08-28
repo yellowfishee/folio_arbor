@@ -1,7 +1,45 @@
-# Tauri + Vue + TypeScript
+# 项目介绍
+folio-arbor 是一款基于tauri的笔记管理软件，旨在贯彻卢曼卡片笔记体系。
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+通过组织文献笔记、永久笔记，帮助用户高效的管理自己的知识体系。
 
-## Recommended IDE Setup
+在这里，用户可以通过标签来组织自己的文献笔记，并且通过树状图来展示自己的永久笔记。
 
-- [VS Code](https://code.visualstudio.com/) + [Vue - Official](https://marketplace.visualstudio.com/items?itemName=Vue.volar) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+永久笔记在树上的位置越紧密，则说明永久笔记之间的联系越紧密。
+
+## 技术栈
+- tauri
+- vue3
+- typescript
+- naive-ui
+- sqlite
+
+# Todo
+- 标签管理功能
+  - 在侧边栏添加新的按钮，用以在侧边栏展示标签体系
+- 文献笔记的@功能，文献笔记可以互相@，形成知识图谱
+- 永久笔记
+  - 以markdown的形式单纯的组织笔记
+  - 可以关联文献笔记
+  - 为了保证永久笔记的独立性，我并不提倡永久笔记强关联永久笔记。
+    - 因为永久笔记之间的联系已经由树上的位置决定了
+  - 但是为了保证跨领域，所以仍然会保留永久笔记关联永久笔记的功能。
+    - 例如，我在永久笔记A中关联了永久笔记B，那么我就可以在永久笔记A中通过@B的方式来引用永久笔记B。
+
+# 为什么要做这个项目
+我们深知，一套合理且完善的笔记体系能够帮助我们高效的学习。在组织笔记的过程中，我们也会产生新的洞见。
+
+在制作这个项目之前，我曾苦苦追寻一个合适这套体系的软件，如：flomo、obsidian、emacs等等。
+
+除开flomo，大部分的软件都在提倡all in one，即所有的功能都可以在一个软件中完成。
+
+这的确是一个美好的愿景，但我更愿意拥有一款完美适配我的工作流的软件，我的确可以通过配置、开发来让上面提到的软件变得更适合我，可是然后呢？
+
+然后就没有然后了，不断的寻找着新的插件，不断的沉迷于插件的功能中，我甚至一度以为，自己找插件的时间已经完全超过我看书的时间了。
+
+所以我决定自己制作一个软件，来满足我自己的需求。
+
+一是巩固开发能力，二是能够根据自己的需求动态的添加功能，而不必受限于插件、软件。
+
+## 最后
+这也许对你来说不是一个好项目，甚至完全逆你的工作流，但是我希望你能够从这个项目中获得一些价值。
