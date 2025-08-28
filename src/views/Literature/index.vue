@@ -53,23 +53,46 @@ import {MoreHorizSharp} from "@vicons/material";
 import {useNotification, NIcon} from "naive-ui";
 
 
-import type {LiteratureNoteModel} from "@/models/model";
+import type {LiteratureNoteModel, TagModel} from "@/models/model";
 
 const content = ref("");
 
 const notes = ref<LiteratureNoteModel[]>([]);
+const tags = ref<TagModel[]>([]);
+
 // 在setup函数外部初始化notification
 const notification = useNotification();
 
 
 // 发布处理函数
-const handlePublish = async (content) => {
+const handlePublish = async (content: string) => {
   try {
-    await invoke("create_literature_note", {content});
+    tags.value = parseTags(content);
+    console.log("tags:", tags.value);
+    await invoke("create_literature_note", {content, tags: tags.value});
     await getAllLiterature();
   } catch (error) {
     console.error("发布失败:", error);
   }
+};
+
+const parseTags = (content) => {
+  // 优化后的正则表达式，匹配class="tag"的<a>标签
+  const tagRegex = /<a\s+[^>]*?class="tag"[^>]*?data-is-new="([^"]*)"[^>]*?>#([^<]+)<\/a>/g;
+  const matches = [...content.matchAll(tagRegex)];
+  return matches.map(match => {
+    const isNewValue = match[1];      // data-is-new属性值
+    const rawContent = match[2];      // 原始文本内容（含#前缀）
+    const fullName = rawContent.startsWith('#')
+        ? rawContent.substring(1)   // 移除开头的#
+        : rawContent;                // 保留原内容（无#时）
+
+    return {
+      id: isNewValue === 'new' ? null : parseInt(isNewValue),
+      full_name: fullName,
+      is_new: isNewValue === 'new'  // 转换为布尔值
+    };
+  });
 };
 
 const getAllLiterature = async () => {
@@ -80,6 +103,7 @@ const getAllLiterature = async () => {
     console.error("获取所有文献笔记失败:", error);
   }
 };
+
 
 // 编辑器样式响应式控制
 const editorStyle = reactive({
@@ -192,7 +216,7 @@ watch(content, (newVal) => {
 }
 
 /* Basic editor styles */
-:deep .tag {
+:deep(.tag) {
   background-color: var(--purple-light);
   border-radius: 0.4rem;
   box-decoration-break: clone;

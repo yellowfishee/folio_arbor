@@ -1,17 +1,16 @@
 <template>
   <div class="dropdown-menu">
-    <template v-if="items.length">
+    <template v-if="items.length >= 1 && !items[0].isNew">
       <button
-          :class="{ 'is-selected': index === selectedIndex }"
+          :class="{ 'is-selected': index === selectedIndex, 'is-new': item.isNew }"
           v-for="(item, index) in items"
           :key="index"
           @click="selectItem(index)"
           style="font-size: 15px;"
       >
-        {{ item }}
+        {{ item.label }}
       </button>
     </template>
-    <div class="item" v-else>No result</div>
   </div>
 </template>
 
@@ -75,11 +74,13 @@ export default {
 
     selectItem(index) {
       const item = this.items[index]
-
-      if (item) {
-        this.command({id: item})
-      }
-    },
+      // 传递完整对象包含 isNew 标识
+      this.command({
+        id: item.id,
+        label: item.label,
+        isNew: item.isNew
+      })
+    }
   },
 }
 </script>
@@ -125,4 +126,5 @@ export default {
     }
   }
 }
+
 </style>

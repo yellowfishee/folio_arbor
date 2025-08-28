@@ -59,6 +59,17 @@ const editor = useEditor({
       },
     }),
     Mention.configure({
+      renderHTML({node}) {
+        return ['a', {
+          class: 'tag',
+          'data-is-new': node.attrs.id,
+          href: `#${node.attrs.label}`,
+          target: '_blank',
+          style: 'text-decoration: none;',
+        },
+        `#${node.attrs.label}`
+        ]
+      },
       HTMLAttributes: {
         class: 'tag',
       },
@@ -126,7 +137,7 @@ const emit = defineEmits(["update:modelValue", "publish"]);
   border-radius: 8px;
 }
 
-:deep .tiptap-editor {
+:deep(.tiptap-editor) {
   border: none;
   outline: none;
   min-height: 200px;
@@ -137,7 +148,7 @@ const emit = defineEmits(["update:modelValue", "publish"]);
   border: none;
 }
 
-:deep .tiptap-editor:focus-within {
+:deep(.tiptap-editor:focus-within) {
   outline: none !important;
   border: none !important;
 }
@@ -181,7 +192,7 @@ const emit = defineEmits(["update:modelValue", "publish"]);
 }
 
 /* Basic editor styles */
-:deep .tiptap {
+:deep(.tiptap-editor-container) .tiptap {
   .tag {
     background-color: var(--purple-light);
     border-radius: 0.4rem;

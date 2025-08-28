@@ -1,14 +1,15 @@
 use crate::db::connections::DbState;
 use crate::services::LiteratureNoteService;
 use tauri::{command, State};
-use crate::db::models::LiteratureNote;
+use crate::db::models::{LiteratureNote, Tag};
 
 #[command]
 pub async fn create_literature_note(
     content: String,
+    tags: Vec<Tag>,
     da_state: State<'_, DbState>,
 ) -> Result<String, String> {
-    LiteratureNoteService::create_literature_note(&da_state.db, content)
+    LiteratureNoteService::create_literature_note(&da_state.db, content, tags)
         .await
         .map(|note| format!("Note created with ID: {}", note.id))
         .map_err(|e| e.to_string())

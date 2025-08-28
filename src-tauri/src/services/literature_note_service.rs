@@ -1,12 +1,15 @@
 use log::info;
 use crate::db::models::LiteratureNote;
 use sqlx::SqlitePool;
+use crate::db::models::Tag;
+use crate::services::tag_service::TagService;
 pub struct LiteratureNoteService;
 
 impl LiteratureNoteService {
     pub async fn create_literature_note(
         pool: &SqlitePool,
         content: String,
+        tags: Vec<Tag>,
     ) -> Result<LiteratureNote, sqlx::Error> {
         let note = LiteratureNote::new(content);
 
@@ -22,6 +25,22 @@ impl LiteratureNoteService {
 
         // 获取刚插入的记录的ID
         let id = result.last_insert_rowid();
+        info!("插入笔记成功，ID: {}", id);
+
+        // 处理标签
+        let tag_service = TagService {};
+        for tag in tags {
+            let tag_new = Tag::new(tag.full_name.clone(), None);
+            if tag.id.is_none() {
+                let tag_id = tag_service.create_tag(pool, &tag_new).await?;
+                info!("创建标签成功，ID: {}", tag_id);
+            } else {
+                let tag_id = tag_service.get_tag_id_by_full_name(pool, tag.full_name.clone()).await?;
+                info!("获取标签ID成功，ID: {}", tag_id);
+            }
+
+            // TODO 待处理标签关联
+        }
 
         // 返回新创建的笔记
         Ok(LiteratureNote {

@@ -23,6 +23,7 @@ pub fn run() {
             commands::create_literature_note,
             commands::get_all_literature_notes,
             commands::delete_literature_note,
+            commands::get_tags,
         ])
         .run(tauri::generate_context!())
         .expect("应用启动失败");

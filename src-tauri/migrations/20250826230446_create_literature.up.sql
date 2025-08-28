@@ -16,10 +16,13 @@ create table if not exists literature_relations (
     update_time DATETIME not null
 );
 
+DROP TABLE IF EXISTS tags;
+
 -- 创建tag表，用于存储标签
 create table if not exists tags (
     id integer primary key autoincrement,
-    name text,
+    full_name text,
+    p_id integer,
     create_time DATETIME not null,
     update_time DATETIME not null
 );
