@@ -1,3 +1,4 @@
+use log::info;
 use crate::db::models::LiteratureNote;
 use sqlx::SqlitePool;
 pub struct LiteratureNoteService;
@@ -35,23 +36,26 @@ impl LiteratureNoteService {
     pub async fn get_all_literature_notes(
         pool: &SqlitePool,
     ) -> Result<Vec<LiteratureNote>, sqlx::Error> {
-        sqlx::query_as::<_, LiteratureNote>(
+        let notes = sqlx::query_as::<_, LiteratureNote>(
             "SELECT * FROM literature_notes ORDER BY create_time DESC"
         )
         .fetch_all(pool)
-        .await
+        .await;
+        info!("获取所有笔记成功");
+        notes
     }
 
     pub async fn delete_literature_note(
         pool: &SqlitePool,
         id: i64,
     ) -> Result<(), sqlx::Error> {
-        sqlx::query(
+        let result = sqlx::query(
             "DELETE FROM literature_notes WHERE id = ?"
         )
         .bind(id)
         .execute(pool)
         .await?;
+        info!("删除笔记成功，影响行数: {}", result.rows_affected());
         Ok(())
     }
 }

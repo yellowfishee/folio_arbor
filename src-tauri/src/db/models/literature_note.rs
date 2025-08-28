@@ -23,8 +23,8 @@ impl FromRow<'_, SqliteRow> for LiteratureNote {
         Ok(Self {
             id,
             content,
-            create_time: DateTime::from_utc(create_time_naive, Utc),
-            update_time: DateTime::from_utc(update_time_naive, Utc),
+            create_time: DateTime::from_naive_utc_and_offset(create_time_naive, Utc),
+            update_time: DateTime::from_naive_utc_and_offset(update_time_naive, Utc),
         })
     }
 }

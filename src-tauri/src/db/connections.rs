@@ -1,5 +1,4 @@
 use sqlx::{migrate::MigrateDatabase, sqlite::SqlitePoolOptions, Pool, Sqlite};
-use std::fmt::format;
 use tauri::{App, Manager as _};
 pub type Db = Pool<Sqlite>;
 

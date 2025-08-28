@@ -1,47 +1,27 @@
-# Appenders 定义日志输出目标
-appenders:
-  # 控制台输出配置
-  stdout:
-    kind: console  # 输出到标准输出
-    encoder:
-      pattern: "{d(%+)(utc)} [{f}:{L}] {h({l})} {M}:{m}{n}"  # 格式说明：
-      # %+ : RFC3339时间格式（UTC时区）
-      # {f}:{L} : 文件名和行号
-      # {h({l})} : 高亮显示的日志级别
-      # {M} : 模块路径
-    filters:
-      - kind: threshold  # 过滤规则
-        level: info       # 只记录info及以上级别
+refresh_rate: 5 seconds
 
-  # 普通文件输出
+appenders:
+  console:
+    kind: console
+    encoder:
+      pattern: "{d(%+)(local)} [{t}] {h({l})} {M}:{m}{n}"
+    filters:
+      - kind: threshold
+        level: info
   file:
     kind: file
-    path: "log/file-$TIME{%Y-%m-%d_%H-%M-%S}.log"  # 带时间戳的日志文件路径
+    path: info.log
     encoder:
-      pattern: "[{d(%Y-%m-%dT%H:%M:%S%.6f)} {h({l}):<5.5} {M}] {m}{n}"  # 格式：
-      # %Y-%m-%dT%H:%M:%S%.6f : 带微秒的本地时间
-      # {h({l}):<5.5} : 左对齐且最大5字符的日志级别
+      pattern: "{d} [{t}] {l} {M}:{m}{n}"
 
-  # 滚动日志文件配置
-  rollingfile:
-    kind: rolling_file
-    path: "log/rolling_file.log"  # 主日志文件路径
-    encoder:  # 格式与普通文件相同
-      pattern: "[{d(%Y-%m-%dT%H:%M:%S%.6f)} {h({l}):<5.5} {M}] {m}{n}"
-    policy:
-      trigger:
-        kind: time
-        interval: 1 minute  # 每分钟触发滚动
-      roller:
-        kind: fixed_window  # 固定窗口滚动策略
-        pattern: "log/old-rolling_file-{}.log"  # 备份文件命名模式
-        base: 0    # 起始编号
-        count: 2   # 保留2个备份文件
-
-# 根日志配置
 root:
-  level: info       # 全局日志级别
   appenders:
-    - stdout        # 同时输出到三个目标
+    - console
     - file
-    - rollingfile
+
+loggers:
+  multi_logger_config::a:
+    level: info
+    appenders:
+      - file
+    additive: true
