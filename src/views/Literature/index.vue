@@ -46,14 +46,18 @@
 
 <script setup lang="ts">
 import {ref, reactive, onMounted, onUnmounted, watch, h} from "vue";
-import type {Component} from 'vue'
-import TiptapEditor from "@/components/TiptapEditor.vue";
+import type {Component} from 'vue';
+import TiptapEditor from "@/components/TiptapEditor/TiptapEditor.vue";
 import {invoke} from "@tauri-apps/api/core";
 import {MoreHorizSharp} from "@vicons/material";
-import {useNotification} from "naive-ui";
+import {useNotification, NIcon} from "naive-ui";
+
+
+import type {LiteratureNoteModel} from "@/models/model";
 
 const content = ref("");
-const notes = ref([]);
+
+const notes = ref<LiteratureNoteModel[]>([]);
 // 在setup函数外部初始化notification
 const notification = useNotification();
 
@@ -186,5 +190,15 @@ watch(content, (newVal) => {
   text-align: left;
   justify-content: flex-start;
 }
+
+/* Basic editor styles */
+:deep .tag {
+  background-color: var(--purple-light);
+  border-radius: 0.4rem;
+  box-decoration-break: clone;
+  color: var(--purple);
+  padding: 0.1rem 0.3rem;
+}
+
 
 </style>

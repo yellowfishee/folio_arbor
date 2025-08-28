@@ -20,9 +20,11 @@ import {useEditor, EditorContent} from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
 import {Placeholder} from "@tiptap/extensions";
 import {watch} from "vue";
-import {Button} from "./tiptap-ui-primitive/button";
+import {Button} from "../tiptap-ui-primitive/button/index.js";
 import {PaperPlane} from "@vicons/ionicons5";
 import {ref} from "vue";
+import Mention from '@tiptap/extension-mention'
+import suggestions from "@/components/TiptapEditor/suggestions.js";
 
 const props = defineProps({
   modelValue: {
@@ -31,7 +33,8 @@ const props = defineProps({
   },
   publish: {
     type: Function,
-    default: () => {},
+    default: () => {
+    },
   },
 });
 
@@ -55,6 +58,12 @@ const editor = useEditor({
         console.log(node);
       },
     }),
+    Mention.configure({
+      HTMLAttributes: {
+        class: 'tag',
+      },
+      suggestions,
+    })
   ],
   // 添加基础配置确保编辑器可用
   editorProps: {
@@ -117,7 +126,7 @@ const emit = defineEmits(["update:modelValue", "publish"]);
   border-radius: 8px;
 }
 
-::v-deep .tiptap-editor {
+:deep .tiptap-editor {
   border: none;
   outline: none;
   min-height: 200px;
@@ -128,7 +137,7 @@ const emit = defineEmits(["update:modelValue", "publish"]);
   border: none;
 }
 
-::v-deep .tiptap-editor:focus-within {
+:deep .tiptap-editor:focus-within {
   outline: none !important;
   border: none !important;
 }
@@ -169,5 +178,35 @@ const emit = defineEmits(["update:modelValue", "publish"]);
 .icon {
   width: 20px; /* 图标大小 */
   height: 20px; /* 图标大小 */
+}
+
+/* Basic editor styles */
+:deep .tiptap {
+  .tag {
+    background-color: var(--purple-light);
+    border-radius: 0.4rem;
+    box-decoration-break: clone;
+    color: var(--purple);
+    padding: 0.1rem 0.3rem;
+  }
+}
+
+/* Character count */
+.character-count {
+  align-items: center;
+  color: var(--gray-5);
+  display: flex;
+  font-size: 0.75rem;
+  gap: 0.5rem;
+  margin: 1.5rem;
+
+  svg {
+    color: var(--purple);
+  }
+
+  &--warning,
+  &--warning svg {
+    color: var(--red);
+  }
 }
 </style>
