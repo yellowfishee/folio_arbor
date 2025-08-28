@@ -1,5 +1,5 @@
 use chrono::{DateTime, Utc};
-use sqlx::{FromRow, Row};
+use sqlx::{FromRow};
 
 #[derive(Debug, serde::Serialize, serde::Deserialize, FromRow)]
 pub struct Tag {
