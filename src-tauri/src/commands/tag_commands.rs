@@ -1,7 +1,7 @@
 use crate::db::connections::DbState;
 use crate::db::models::Tag;
 use crate::services::TagService;
-use tauri::{command, State};
+use tauri::{command};
 
 #[command]
 pub async fn get_tags(db: tauri::State<'_, DbState>) -> Result<Vec<Tag>, String> {
