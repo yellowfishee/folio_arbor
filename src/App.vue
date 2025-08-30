@@ -5,7 +5,7 @@ import {NNotificationProvider} from 'naive-ui'
 
 <template>
   <n-notification-provider :placement="'bottom'">
-    <router-view />
+    <router-view/>
   </n-notification-provider>
 </template>
 
